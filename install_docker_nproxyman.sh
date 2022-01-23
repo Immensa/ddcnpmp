@@ -245,17 +245,19 @@ startInstall()
 
         if [[ "$OS" == "1" ]]; then
           docker network create backend_auth_network
-          docker-compose up -d
+        #   docker-compose up -d
           # To use the local file.
           # Without having to download the file online, which occurs in the first step.
+          docker-compose -f docker_compose.nginx_proxy_manager.yml up -d
           docker-compose -f docker-compose-stack-keycloak.yml up -d
         fi
 
         if [[ "$OS" != "1" ]]; then
           sudo docker network create backend_auth_network
-          sudo docker-compose up -d
+        #   sudo docker-compose up -d
           # To use the local file.
           # Without having to download the file online, which occurs in the first step.
+          sudo docker-compose -f docker_compose.nginx_proxy_manager.yml up -d
           sudo docker-compose -f docker-compose-stack-keycloak.yml up -d
         fi
 
