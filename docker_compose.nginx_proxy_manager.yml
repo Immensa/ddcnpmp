@@ -1,0 +1,52 @@
+version: '3.7'
+services:
+  backend_npm:
+    container_name: backend_npm
+    image: jc21/nginx-proxy-manager:latest
+    restart: always
+    ports:
+      # Public HTTP Port:
+      - 80:80
+      # Public HTTPS Port:
+      - 443:443
+      # Admin Web Port:
+      - 81:81
+    environment:
+      # These are the settings to access your db
+      - DB_MYSQL_HOST=backend_npm_db
+      - DB_MYSQL_PORT=3306
+      - DB_MYSQL_USER=backend_nginx
+      - DB_MYSQL_PASSWORD=senha
+      - DB_MYSQL_NAME=backend_nginx_db
+      # Uncomment this if IPv6 is not enabled on your host
+      # DISABLE_IPV6: 'true'
+    volumes:
+      - backend_npm_data_volume:/data
+      - backend_npm_ssl_volume:/etc/letsencrypt
+    depends_on:
+      - backend_npm_db
+
+  backend_npm_db:
+    container_name: backend_npm_db
+    image: 'jc21/mariadb-aria:latest'
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=senha
+      - MYSQL_DATABASE=backend_nginx_db
+      - MYSQL_USER=backend_nginx
+      - MYSQL_PASSWORD=senha
+    volumes:
+      - backend_npm_db_volume:/var/lib/mysql
+
+networks:
+  default:
+    name: backend_network
+    external: true
+
+volumes:
+  backend_npm_data_volume:
+    name: backend_npm_data_volume
+  backend_npm_db_volume:
+    name: backend_npm_db_volume
+  backend_npm_ssl_volume:
+    name: backend_npm_ssl_volume

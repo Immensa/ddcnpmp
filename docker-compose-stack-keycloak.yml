@@ -1,0 +1,37 @@
+version: '3.7'
+services:
+  backend_keycloak:
+    container_name: backend_keycloak
+    image: jboss/keycloak:latest
+    environment:
+      - DB_VENDOR=POSTGRES
+      - DB_ADDR=backend_keycloak_db
+      - DB_DATABASE=backend_db
+      - DB_USER=backend_auth
+      - DB_PASSWORD=senha
+      - KEYCLOAK_USER=admin
+      - KEYCLOAK_PASSWORD=admin
+      - PROXY_ADDRESS_FORWARDING=true
+      - TZ=UTC
+      - JAVA_TOOL_OPTIONS=-Dkeycloak.profile.feature.admin_fine_grained_authz=enabled # -Dkeycloak.profile.feature.declarative_user_profile=enabled
+    ports:
+      - 6363:8080
+      - 6262:8443
+    depends_on:
+      - backend_keycloak_db
+
+  backend_keycloak_db:
+    container_name: backend_keycloak_db
+    image: postgres:14.1-alpine
+    environment:
+      - POSTGRES_DB=backend_db
+      - POSTGRES_USER=backend_auth
+      - POSTGRES_PASSWORD=senha
+      - TZ=UTC
+    ports:
+      - 5434:5432
+
+networks:
+  default:
+    name: backend_network
+    external: true
