@@ -239,7 +239,7 @@ startInstall()
         echo ""
 
         if [[ "$OS" == "1" ]]; then
-          docker network create backend_auth_network
+          docker network create backend_network
         #   docker-compose up -d
           # To use the local file.
           # Without having to download the file online, which occurs in the first step.
