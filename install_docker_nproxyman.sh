@@ -225,21 +225,16 @@ startInstall()
             echo "$X"
         done
     fi
-
+    
+    sudo usermod -aG docker ${USER}
+    su - ${USER}
+    
     if [[ "$NPM" == [yY] ]]; then
         echo "##########################################"
         echo "###     Install NGinX Proxy Manager    ###"
         echo "##########################################"
     
-        # pull an nginx proxy manager docker-compose file from github
-        # echo "    1. Pulling a default NGinX Proxy Manager docker-compose.yml file."
-        
-        # mkdir nginx-proxy-manager
-        # cd nginx-proxy-manager
-
-        # curl https://raw.githubusercontent.com/Immensa/ddcnpmp/636edd83f1659944ce4fb41b79da8970ae138a7a/docker_compose.nginx_proxy_manager.yml?token=GHSAT0AAAAAABQ2IHA6UMZQQHZDFWUSF7GWYPLXNSQ -o docker-compose.yml >> ~/docker-script-install.log 2>&1
-
-        echo "    2. Running the docker-compose.yml to install and start NGinX Proxy Manager"
+        echo "    1. Running the docker-compose.yml to install and start NGinX Proxy Manager"
         echo ""
         echo ""
 
@@ -249,16 +244,6 @@ startInstall()
           # To use the local file.
           # Without having to download the file online, which occurs in the first step.
           docker-compose -f docker_compose.nginx_proxy_manager.yml up -d
-          docker-compose -f docker-compose-stack-keycloak.yml up -d
-        fi
-
-        if [[ "$OS" != "1" ]]; then
-          sudo docker network create backend_auth_network
-        #   sudo docker-compose up -d
-          # To use the local file.
-          # Without having to download the file online, which occurs in the first step.
-          sudo docker-compose -f docker_compose.nginx_proxy_manager.yml up -d
-          sudo docker-compose -f docker-compose-stack-keycloak.yml up -d
         fi
 
         echo ""
@@ -284,8 +269,8 @@ startInstall()
         echo ""
         echo ""
 
-        sudo docker volume create portainer_data
-        sudo docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
+        docker volume create portainer_data
+        docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
         echo ""
         echo ""
         echo "    Navigate to your server hostname / IP address on port 9000 and create your admin account for Portainer-CE"
@@ -303,8 +288,8 @@ startInstall()
         echo ""
         echo "    1. Preparing to install Portainer Agent"
 
-        sudo docker volume create portainer_data
-        sudo docker run -d -p 9001:9001 --name portainer_agent --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes portainer/agent
+        docker volume create portainer_data
+        docker run -d -p 9001:9001 --name portainer_agent --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v /var/lib/docker/volumes:/var/lib/docker/volumes portainer/agent
         echo ""
         echo ""
         echo "    From Portainer or Portainer-CE add this Agent instance via the 'Endpoints' option in the left menu."
