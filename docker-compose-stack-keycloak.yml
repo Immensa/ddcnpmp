@@ -30,6 +30,18 @@ services:
       - TZ=UTC
     ports:
       - 5434:5432
+  
+  backend_auth_keycloak_pgadmin:
+    container_name: backend_auth_keycloak_pgadmin
+    image: dpage/pgadmin4:latest
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=email@gmail.com
+      - PGADMIN_DEFAULT_PASSWORD=senha
+      - PGADMIN_LISTEN_PORT=5050
+    ports:
+      - 5050:80
+    depends_on:
+      - backend_keycloak_db
 
 networks:
   default:
