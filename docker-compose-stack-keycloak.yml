@@ -2,7 +2,7 @@ version: '3.7'
 services:
   backend_keycloak:
     container_name: backend_keycloak
-    image: quay.io/keycloak/keycloak
+    image: quay.io/keycloak/keycloak:22.0.1
     environment:
       - DB_VENDOR=POSTGRES
       - DB_ADDR=backend_keycloak_db
